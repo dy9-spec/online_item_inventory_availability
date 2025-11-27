@@ -52,7 +52,7 @@ class AmazonChecker:
         whole = price_block.select_one(".a-price-whole")
         fraction = price_block.select_one(".a-price-fraction") or price_block.select_one("sup.a-price-fraction")
         if whole:
-            whole_text = whole.get_text(strip=True)
+            whole_text = whole.get_text(strip=True).replace(".","")
             frac_text = fraction.get_text(strip=True) if fraction else "00"
             result["deal_price"] = f"${whole_text}.{frac_text}"
 
@@ -113,12 +113,12 @@ def main():
         print("\n" + "="*60)
         print("AMAZON.CA RESULT")
         print("="*60)
-        print(f"Product     : {r['title']}")
+        print(f"Product: {r['title']}")
         status = "IN STOCK" if r['available'] else "OUT OF STOCK"
-        print(f"Status      : {status} ({r['confidence']})")
-        print(f"Deal Price  Price : {r['deal_price']}")
+        print(f"Status: {status} ({r['confidence']})")
+        print(f"Deal Price: {r['deal_price']}")
         if r['list_price']:
-            print(f"List Price    : {r['list_price']}")
+            print(f"List Price: {r['list_price']}")
         print("="*60 + "\n")
 
     finally:
