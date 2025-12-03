@@ -1,3 +1,5 @@
-requests==2.31.0
-beautifulsoup4==4.12.2
-lxml==4.9.3
+# requirements.txt – 100% working combo for Amazon.ca scraper – December 2025
+undetected-chromedriver==3.5.5
+selenium==4.25.0
+beautifulsoup4==4.12.3
+lxml==5.3.0
