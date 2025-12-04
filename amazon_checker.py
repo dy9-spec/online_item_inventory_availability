@@ -5,6 +5,7 @@ Amazon.ca Deal Checker – WORKING NOV 2025
 Tested on https://www.amazon.ca/dp/B0DGJJKWW7 → returns $189.00
 """
 
+import os
 import time
 import re
 from datetime import datetime
@@ -26,8 +27,28 @@ class AmazonChecker:
         options.add_argument("--headless=new")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-browser-side-navigation")
+        options.add_argument("--disable-features=VizDisplayCompositor")
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument("--remote-debugging-port=9222")
         options.add_argument("--lang=en-CA")
-        self.driver = uc.Chrome(options=options)
+
+        options.add_argument("--disable-setuid-sandbox")
+        options.add_argument("--single-process")
+
+        # Add this line right before creating the driver
+        os.environ["LANG"] = "en_CA.UTF-8"
+
+        # Force UC to use your existing Chrome (no auto-download)
+        self.driver = uc.Chrome(
+            options=options,
+            use_subprocess=True,  # ← crucial for launchd
+            driver_executable_path=None,  # let it find Chrome itself
+            browser_executable_path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",  # ← explicit path
+            version_main=None,  # auto-detect version
+        )
 
     def get_price_and_stock(self, url: str) -> dict:
         self.driver.get(url)
