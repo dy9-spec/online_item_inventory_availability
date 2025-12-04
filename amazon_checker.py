@@ -52,95 +52,94 @@ class AmazonChecker:
 
     def get_price_and_stock(self, url: str) -> dict:
         self.driver.get(url)
-
-        # Wait for the price block to appear
-        WebDriverWait(self.driver, 20).until(
-            EC.presence_of_element_located(
-                (By.ID, "corePriceDisplay_desktop_feature_div")
-            )
-        )
-        time.sleep(7)  # Black Friday deals load slowly
+        time.sleep(8)  # give it a moment to start loading
 
         soup = BeautifulSoup(self.driver.page_source, "lxml")
 
         result = {
-            "title": (
-                soup.select_one("#productTitle").get_text(strip=True)
-                if soup.select_one("#productTitle")
-                else "Unknown"
-            ),
+            "title": "Unknown",
             "deal_price": None,
             "list_price": None,
-            "available": None,
+            "available": False,
             "confidence": "unknown",
             "url": url,
         }
 
-        # ─────── PRICE EXTRACTION (this works 100%) ───────
-        price_block = soup.find("div", {"id": "corePriceDisplay_desktop_feature_div"})
+        # ─────── TITLE ───────
+        title_el = soup.select_one("#productTitle")
+        if title_el:
+            result["title"] = title_el.get_text(strip=True)
 
-        # 1. Visible big red deal price (e.g. 189.00)
-        whole = price_block.select_one(".a-price-whole")
-        fraction = price_block.select_one(
-            ".a-price-fraction"
-        ) or price_block.select_one("sup.a-price-fraction")
-        if whole:
-            whole_text = whole.get_text(strip=True).replace(".", "")
-            frac_text = fraction.get_text(strip=True) if fraction else "00"
-            result["deal_price"] = f"${whole_text}.{frac_text}"
+        page_text = soup.get_text().lower()
 
-        # 2. Strikethrough list price (219.99)
-        strike = price_block.select_one("span.a-text-price span.a-offscreen")
-        if strike:
-            result["list_price"] = strike.get_text(strip=True)
-
-        # 3. Final fallback – pick the lowest $-price in reasonable range
-        if not result["deal_price"]:
-            prices = re.findall(
-                r"\$([0-9]{3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)", soup.get_text()
-            )
-            candidates = []
-            for p in prices:
-                try:
-                    num = float(p.replace(",", ""))
-                    if 100 <= num <= 300:
-                        candidates.append(f"${p}")
-                except:
-                    pass
-            if candidates:
-                result["deal_price"] = min(
-                    candidates, key=lambda x: float(x.replace("$", "").replace(",", ""))
-                )
-
-        # ─────── AVAILABILITY ───────
-        text = soup.get_text().lower()
-        signals = 0
-        if "in stock" in text:
-            signals += 1
-        if "only" in text and "left in stock" in text:
-            signals += 1
-        if any(x in text for x in ["get it by", "delivery", "arrives"]):
-            signals += 1
-        if soup.select_one("#add-to-cart-button"):
-            signals += 1
-
-        if any(
-            x in text
-            for x in [
-                "currently unavailable",
-                "we don't know when",
-                "temporarily out of stock",
-            ]
-        ):
+        # ─────── EARLY OUT: Obvious unavailable states ───────
+        unavailable_phrases = [
+            "currently unavailable",
+            "we don't know when or if this item will be back in stock",
+            "temporarily out of stock",
+            "unavailable",
+            "sign up to be notified",
+            "join waitlist",
+        ]
+        if any(phrase in page_text for phrase in unavailable_phrases):
             result["available"] = False
-        elif signals >= 2:
+            result["confidence"] = "high"
+            return result  # ← exit early, no need to wait for price div
+
+        # ─────── PRICE BLOCK (only try if we think it might exist) ───────
+        try:
+            WebDriverWait(self.driver, 12).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "[data-asin][data-uuid]")
+                )
+            )
+            # refresh soup after wait
+            soup = BeautifulSoup(self.driver.page_source, "lxml")
+            page_text = soup.get_text().lower()
+        except:
+            pass  # we’ll just work with whatever we have
+
+        price_block = soup.find(
+            "div", {"id": "corePriceDisplay_desktop_feature_div"}
+        ) or soup.find("div", {"id": "corePrice_desktop"})
+
+        if price_block:
+            # Deal price
+            whole = price_block.select_one(".a-price-whole")
+            fraction = price_block.select_one(
+                ".a-price-fraction"
+            ) or price_block.select_one("sup.a-price-fraction")
+            if whole:
+                w = whole.get_text(strip=True).replace(".", "").replace(",", "")
+                f = fraction.get_text(strip=True) if fraction else "00"
+                result["deal_price"] = f"${w}.{f}"
+
+            # List price (strikethrough)
+            strike = price_block.select_one("span.a-text-price span.a-offscreen")
+            if strike:
+                result["list_price"] = strike.get_text(strip=True)
+
+        # ─────── AVAILABILITY SIGNALS (only if we didn’t already bail) ───────
+        signals = 0
+        if "in stock" in page_text:
+            signals += 1
+        if "only " in page_text and " left in stock" in page_text:
+            signals += 1
+        if any(
+            x in page_text for x in ["get it by", "delivery:", "arrives", "in stock on"]
+        ):
+            signals += 1
+        if soup.select_one("#add-to-cart-button, #buybox"):
+            signals += 1
+        if soup.select_one('input[name="submit.add-to-cart"]'):
+            signals += 1
+
+        if signals >= 2:
             result["available"] = True
             result["confidence"] = "high"
         elif signals >= 1:
             result["available"] = True
             result["confidence"] = "medium"
-        else:
-            result["available"] = False
 
         return result
 
