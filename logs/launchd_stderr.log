@@ -1,64 +1,52 @@
 ERROR: Traceback (most recent call last):
-  File "/Users/diyao/Desktop/files/amazon_checker.py", line 199, in <module>
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1037, in _send_output
+    self.send(msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 975, in send
+    self.connect()
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1447, in connect
+    super().connect()
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 941, in connect
+    self.sock = self._create_connection(
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/socket.py", line 824, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/diyao/Desktop/files/amazon_checker.py", line 178, in <module>
     main()
-  File "/Users/diyao/Desktop/files/amazon_checker.py", line 164, in main
-    r = checker.get_price_and_stock(args.url)
-  File "/Users/diyao/Desktop/files/amazon_checker.py", line 57, in get_price_and_stock
-    WebDriverWait(self.driver, 20).until(
-  File "/Users/diyao/Desktop/files/amazon-env/lib/python3.10/site-packages/selenium/webdriver/support/wait.py", line 105, in until
-    raise TimeoutException(message, screen, stacktrace)
-selenium.common.exceptions.TimeoutException: Message: 
-Stacktrace:
-0   undetected_chromedriver             0x00000001073a0568 undetected_chromedriver + 6595944
-1   undetected_chromedriver             0x0000000107397c1a undetected_chromedriver + 6560794
-2   undetected_chromedriver             0x0000000106dc0c3b undetected_chromedriver + 437307
-3   undetected_chromedriver             0x0000000106e12660 undetected_chromedriver + 771680
-4   undetected_chromedriver             0x0000000106e12971 undetected_chromedriver + 772465
-5   undetected_chromedriver             0x0000000106e62ef4 undetected_chromedriver + 1101556
-6   undetected_chromedriver             0x0000000106e602ba undetected_chromedriver + 1090234
-7   undetected_chromedriver             0x0000000106e04fc7 undetected_chromedriver + 716743
-8   undetected_chromedriver             0x0000000106e05c91 undetected_chromedriver + 720017
-9   undetected_chromedriver             0x000000010735d691 undetected_chromedriver + 6321809
-10  undetected_chromedriver             0x0000000107361af0 undetected_chromedriver + 6339312
-11  undetected_chromedriver             0x0000000107338263 undetected_chromedriver + 6169187
-12  undetected_chromedriver             0x0000000107362565 undetected_chromedriver + 6341989
-13  undetected_chromedriver             0x0000000107326ee1 undetected_chromedriver + 6098657
-14  undetected_chromedriver             0x0000000107384ab8 undetected_chromedriver + 6482616
-15  undetected_chromedriver             0x0000000107384c73 undetected_chromedriver + 6483059
-16  undetected_chromedriver             0x000000010739781c undetected_chromedriver + 6559772
-17  libsystem_pthread.dylib             0x00007ff8038b1e05 _pthread_start + 115
-18  libsystem_pthread.dylib             0x00007ff8038ad857 thread_start + 15
-
-
-ERROR: Traceback (most recent call last):
-  File "/Users/diyao/Desktop/files/amazon_checker.py", line 199, in <module>
-    main()
-  File "/Users/diyao/Desktop/files/amazon_checker.py", line 164, in main
-    r = checker.get_price_and_stock(args.url)
-  File "/Users/diyao/Desktop/files/amazon_checker.py", line 57, in get_price_and_stock
-    WebDriverWait(self.driver, 20).until(
-  File "/Users/diyao/Desktop/files/amazon-env/lib/python3.10/site-packages/selenium/webdriver/support/wait.py", line 105, in until
-    raise TimeoutException(message, screen, stacktrace)
-selenium.common.exceptions.TimeoutException: Message: 
-Stacktrace:
-0   undetected_chromedriver             0x000000010fd5b568 undetected_chromedriver + 6595944
-1   undetected_chromedriver             0x000000010fd52c1a undetected_chromedriver + 6560794
-2   undetected_chromedriver             0x000000010f77bc3b undetected_chromedriver + 437307
-3   undetected_chromedriver             0x000000010f7cd660 undetected_chromedriver + 771680
-4   undetected_chromedriver             0x000000010f7cd971 undetected_chromedriver + 772465
-5   undetected_chromedriver             0x000000010f81def4 undetected_chromedriver + 1101556
-6   undetected_chromedriver             0x000000010f81b2ba undetected_chromedriver + 1090234
-7   undetected_chromedriver             0x000000010f7bffc7 undetected_chromedriver + 716743
-8   undetected_chromedriver             0x000000010f7c0c91 undetected_chromedriver + 720017
-9   undetected_chromedriver             0x000000010fd18691 undetected_chromedriver + 6321809
-10  undetected_chromedriver             0x000000010fd1caf0 undetected_chromedriver + 6339312
-11  undetected_chromedriver             0x000000010fcf3263 undetected_chromedriver + 6169187
-12  undetected_chromedriver             0x000000010fd1d565 undetected_chromedriver + 6341989
-13  undetected_chromedriver             0x000000010fce1ee1 undetected_chromedriver + 6098657
-14  undetected_chromedriver             0x000000010fd3fab8 undetected_chromedriver + 6482616
-15  undetected_chromedriver             0x000000010fd3fc73 undetected_chromedriver + 6483059
-16  undetected_chromedriver             0x000000010fd5281c undetected_chromedriver + 6559772
-17  libsystem_pthread.dylib             0x00007ff8038b1e05 _pthread_start + 115
-18  libsystem_pthread.dylib             0x00007ff8038ad857 thread_start + 15
-
+  File "/Users/diyao/Desktop/files/amazon_checker.py", line 140, in main
+    checker = AmazonChecker()
+  File "/Users/diyao/Desktop/files/amazon_checker.py", line 42, in __init__
+    self.driver = uc.Chrome(
+  File "/Users/diyao/Desktop/files/amazon-env/lib/python3.10/site-packages/undetected_chromedriver/__init__.py", line 258, in __init__
+    self.patcher.auto()
+  File "/Users/diyao/Desktop/files/amazon-env/lib/python3.10/site-packages/undetected_chromedriver/patcher.py", line 175, in auto
+    release = self.fetch_release_number()
+  File "/Users/diyao/Desktop/files/amazon-env/lib/python3.10/site-packages/undetected_chromedriver/patcher.py", line 250, in fetch_release_number
+    with urlopen(self.url_repo + path) as conn:
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>
 
